@@ -24,7 +24,9 @@ body.m4{--acc:#2dffa6;--acc2:#22e5ff}
 body.m5{--acc:#ffd84d;--acc2:#ff3cd2}
 @property --ang{syntax:'<angle>';initial-value:0deg;inherits:false}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--txt);font-family:var(--fd);overflow-x:hidden}
+html,body{margin:0;color:var(--txt);font-family:var(--fd);overflow-x:hidden}
+html{background:var(--bg)}
+body{background:transparent}
 @supports (overflow:clip){html,body{overflow-x:clip}}
 body{min-height:100dvh;line-height:1.5;font-size:16px}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -33,7 +35,7 @@ button{cursor:pointer}
 [hidden]{display:none!important}
 
 /* ═════════ FONDO ═════════ */
-.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+.bg{position:fixed;inset:0;z-index:-3;pointer-events:none;overflow:hidden;
   background:radial-gradient(1100px 700px at 50% -12%,#151b52 0%,transparent 62%),radial-gradient(900px 620px at 105% 105%,#2b0e33 0%,transparent 60%),linear-gradient(180deg,#03040b,#060918 60%,#0a0617)}
 .blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.38;mix-blend-mode:screen;transition:background 1.2s}
 .b1{width:54vmax;height:54vmax;left:-20vmax;top:-16vmax;background:radial-gradient(circle,var(--acc),transparent 65%);animation:dr1 24s ease-in-out infinite alternate}
@@ -47,8 +49,8 @@ button{cursor:pointer}
   background-size:64px 64px;transform:perspective(380px) rotateX(72deg);transform-origin:50% 100%;animation:floor 2.8s linear infinite;
   -webkit-mask-image:linear-gradient(to top,#000,rgba(0,0,0,.6) 35%,transparent 92%);mask-image:linear-gradient(to top,#000,rgba(0,0,0,.6) 35%,transparent 92%);opacity:.42}
 @keyframes floor{to{background-position:0 64px,0 0}}
-#net{position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
-.scan{position:fixed;inset:0;z-index:2;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px);mix-blend-mode:overlay}
+#net{position:fixed;inset:0;width:100%;height:100%;z-index:-2;pointer-events:none}
+.scan{position:fixed;inset:0;z-index:-1;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px);mix-blend-mode:overlay}
 
 /* ═════════ HUD ═════════ */
 #hud{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;gap:12px;padding:10px max(14px,env(safe-area-inset-right)) 10px max(14px,env(safe-area-inset-left));
@@ -92,10 +94,10 @@ button{cursor:pointer}
 }
 
 /* ═════════ ESTRUCTURA ═════════ */
-main{position:relative;z-index:5;max-width:1180px;margin:0 auto;padding:22px 16px 90px}
+main{position:relative;max-width:1180px;margin:0 auto;padding:22px 16px 90px}
 body.enjuego main{padding-top:92px}
 @media (max-width:760px){body.enjuego main{padding-top:118px}}
-.screen{display:none;animation:in .7s cubic-bezier(.2,.8,.2,1) both}
+.screen{display:none;animation:in .7s cubic-bezier(.2,.8,.2,1) backwards}
 .screen.on{display:block}
 @keyframes in{from{opacity:0;transform:translateY(18px) scale(.985);filter:blur(6px)}}
 .card{position:relative;background:var(--glass);border:1px solid var(--line);border-radius:var(--rad);padding:clamp(16px,3vw,28px);margin:18px 0;backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);box-shadow:0 20px 60px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.06)}
@@ -362,6 +364,36 @@ details.how summary{cursor:pointer;font-weight:800}
 details.how li{margin:6px 0;font-size:.9rem;color:#d9ddf5}
 details.how code{font-family:var(--fm);color:var(--acc)}
 .numin{display:flex;align-items:center;gap:8px}
+.ctx{margin:2px 0 12px;padding:10px 14px;border-radius:12px;background:color-mix(in srgb,var(--acc) 7%,rgba(255,255,255,.02));border-left:3px solid var(--acc);color:#dfe3ff;font-size:.95rem}
+.cfg{border:1px dashed color-mix(in srgb,var(--acc) 45%,transparent);border-radius:14px;padding:10px 14px;margin:6px 0 10px;background:rgba(0,0,0,.25);transition:border-color .3s,box-shadow .3s}
+.cfg.ok{border-style:solid;border-color:var(--ok);box-shadow:0 0 18px rgba(45,255,166,.2)}
+.cfg-h{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:.92rem}
+.cfg ul{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:5px;font-size:.88rem;color:var(--mut)}
+.cfg li{display:grid;grid-template-columns:20px 1fr;gap:6px}.cfg li i{font-style:normal;font-weight:900;text-align:center}
+.cfg li.ok{color:var(--ok)}.cfg li.ok b{color:var(--ok)}.cfg li.info{opacity:.85}
+.cfg-ok{display:none;margin-top:8px;font-weight:800;color:var(--ok);font-size:.86rem}.cfg.ok .cfg-ok{display:block}
+.instr{margin:4px 0 8px;padding-left:22px;font-size:.92rem;color:#dfe3ff}.instr li{margin:4px 0}
+.esc-cnt{font:800 .8rem var(--fm);color:#ffb21e;margin:4px 0 6px}.esc-cnt.ok{color:var(--ok)}
+.zonas{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+@media (max-width:800px){.zonas{grid-template-columns:1fr}}
+.zonas div{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.035);border:1px solid var(--line);font-size:.9rem}
+.zn{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--acc);color:#04050d;font:900 .9rem var(--fm);flex:none}
+.zt{display:flex;align-items:center;gap:8px;font-weight:800;margin:16px 0 8px;font-size:.95rem}
+.m4w{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:18px;align-items:start}
+.m4s{min-width:0}
+.sim{position:sticky;top:92px;max-height:calc(100vh - 104px);overflow:auto;overscroll-behavior:contain}
+.sim-h{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.ctl2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ctl2 .qrow{grid-template-columns:1fr 84px}
+.simfab,.solo-movil{display:none!important}
+@media (max-width:1099px){
+  .m4w{grid-template-columns:1fr}
+  .sim{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:67;margin:0;max-height:none;height:86vh;border-radius:22px 22px 0 0;transform:translateY(105%);transition:transform .4s cubic-bezier(.2,.8,.2,1);background:linear-gradient(180deg,#0d1130,#070918)}
+  body.simOpen .sim{transform:none}
+  .simfab{display:flex!important;position:fixed;left:16px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:60;align-items:center;gap:8px;border:0;border-radius:999px;padding:14px 20px;font-weight:900;color:#04050d;background:linear-gradient(100deg,var(--acc),var(--acc2));box-shadow:0 10px 30px color-mix(in srgb,var(--acc) 50%,transparent)}
+  .solo-movil{display:inline-flex!important}span.solo-movil{display:inline!important}
+}
+@media (max-width:480px){.ctl2{grid-template-columns:1fr}}
 .numin .inp{max-width:200px;font-family:var(--fm);font-weight:800}
 .numin span{color:var(--dim);font-weight:700;font-size:.9rem}
 .saved{font-size:.84rem}
@@ -652,7 +684,7 @@ const DEC = {E: 'Estructurada', S: 'Semiestructurada', N: 'No estructurada'};
 const CIC = {E: 'Entrada', P: 'Proceso', S: 'Salida', R: 'Retroalimentación'};
 const COMP = {datos: 'Datos', modelo: 'Modelo', interfaz: 'Interfaz', usuario: 'Usuario'};
 const AVC = ['#22e5ff', '#ff3cd2', '#ffb21e', '#2dffa6', '#8b5cf6'];
-const MINW = {j: 25, r: 20, nj: 8, ja: 20, td: 15, ta: 8, tc: 8, a42c: 3, a43p: 8, a44j: 40, a45: 25};
+const MINW = {j: 25, r: 20, nj: 8, ja: 20, td: 15, ta: 8, tc: 8, a43p: 8, a44j: 30, a45n: 10, a45: 25};
 
 /* ═════════════════════════ ESTADO ═════════════════════════ */
 let S = null;               // estado de la evaluación en curso
@@ -677,7 +709,7 @@ function nuevoEstado(o) {
       1: {pir: Array(c.piramide.length).fill(''), dec: Array(c.decisiones.length).fill(''), cic: Array(c.ciclo.length).fill(''), j1: '', j2: ''},
       2: {dlg: c.dialogos.map(() => ({e: '', r: ''})), niv: c.tareas.map(() => ({n: 0, j: ''}))},
       3: {raci: c.tareas.map(() => ['', '', '', '', '']), ja: '', tj: {t: '', enc: '', n: 0, d: '', a: '', p: '', c: ''}},
-      4: {comp: Array(COMPONENTES.length).fill(''), a41d: '', a41s: '', a42: '', a42c: '', a43: '', a43alc: '', a43p: '', a44: '', a44j: '', a45: '', esc: []}
+      4: {comp: Array(COMPONENTES.length).fill(''), a41d: '', a41s: '', a42g0: '', a42cn: '', a42g1: '', a42: '', a43m: '', a43: '', a43alc: '', a43p: '', a44m: '', a44j: '', a45n: '', a44: '', a45: '', esc: []}
     },
     sim: {dia: 0, clima: 0, ev: 0, precio: val.P, costo: val.C, fijo: val.F, q: MOTOR.baseDia(c, val, 0)},
     tele
@@ -881,7 +913,7 @@ async function iniciar(codigo, paralelo, nombre, opciones = {}) {
     Object.keys(S.enviadas).forEach(m => { if (!(j.misiones || {})[m] && !S.pend[m]) delete S.enviadas[m]; });
     if (j.paralelo && j.paralelo !== paralelo) { S.paralelo = j.paralelo; setTimeout(() => toast('Tu código ya estaba registrado en el paralelo ' + j.paralelo + '; se mantiene ese paralelo.', true, 4500), 900); }
     // misiones que ya están en la hoja: mandan sobre lo local
-    Object.entries(j.misiones || {}).forEach(([m, js]) => { try { const o = JSON.parse(js); if (o && o.d) { S.d[m] = o.d; if (o.tele) S.tele[m] = Object.assign(S.tele[m], o.tele); } } catch (e) {} S.enviadas[m] = S.enviadas[m] || Date.now(); });
+    Object.entries(j.misiones || {}).forEach(([m, js]) => { try { const o = JSON.parse(js); if (o && o.d) { if (o.d.raw) Object.assign(o.d, o.d.raw); S.d[m] = o.d; if (o.tele) S.tele[m] = Object.assign(S.tele[m], o.tele); } } catch (e) {} S.enviadas[m] = S.enviadas[m] || Date.now(); });
     if (j.estado === 'terminado') {
       S.final = S.final || j.fin || Date.now(); S.porTiempo = S.porTiempo || /tiempo/i.test(j.estado_txt || '');
       for (const m of [1, 2, 3, 4]) if (!(j.misiones || {})[m] && !S.enviadas[m]) await enviarMision(m, true);
@@ -919,10 +951,10 @@ function pintarPipe() {
   $('#pipe').innerHTML = [1, 2, 3, 4].map(m => `<div class="pn ${S.enviadas[m] ? 'ok' : ''} ${S.mision === m ? 'cur' : ''}"><i>${S.enviadas[m] ? '✓' : m}</i><span>${MISIONES[m].t}</span></div>${m < 4 ? `<div class="pl ${S.enviadas[m] ? 'ok' : ''}"></div>` : ''}`).join('');
 }
 $('#btnCaso').onclick = () => abrirDrawer();
-$('#dClose').onclick = cerrarDrawer; $('#scrim').onclick = cerrarDrawer;
-addEventListener('keydown', e => { if (e.key === 'Escape') cerrarDrawer(); });
+$('#dClose').onclick = cerrarDrawer; $('#scrim').onclick = () => { cerrarDrawer(); abrirSim(false); };
+addEventListener('keydown', e => { if (e.key === 'Escape') { cerrarDrawer(); abrirSim(false); } });
 function abrirDrawer(sec) { $('#drawer').classList.add('on'); $('#scrim').classList.add('on'); if (sec) { const t = $('#dBody #d-' + sec); if (t) t.scrollIntoView({block: 'start'}); } }
-function cerrarDrawer() { $('#drawer').classList.remove('on'); $('#scrim').classList.remove('on'); }
+function cerrarDrawer() { $('#drawer').classList.remove('on'); if (!document.body.classList.contains('simOpen')) $('#scrim').classList.remove('on'); }
 $('#btnMenu').onclick = async () => {
   const todo = [1, 2, 3, 4].every(m => S.enviadas[m]) && !S.cola.length;
   const v = await modal(`<h3>Menú</h3><p><b>${esc(S.nombre)}</b><br><span class="mut" style="font-family:var(--fm)">${esc(S.codigo)} · Paralelo ${esc(S.paralelo)} · ${C().negocio}</span></p>
@@ -1021,11 +1053,12 @@ function enlazar(sec, m) {
   progreso(m);
 }
 function progreso(m) { const [h, t] = AVANCE[m](); const p = Math.round(h / t * 100); const b = $('#pb' + m); if (b) { b.style.width = p + '%'; $('#pt' + m).textContent = h + ' de ' + t + ' respuestas listas'; } }
+const NUM4 = [['a41d', '4.1 a)'], ['a41s', '4.1 b)'], ['a42g0', '4.2 a)'], ['a42cn', '4.2 b)'], ['a42g1', '4.2 c)'], ['a42', '4.2 d)'], ['a43m', '4.3 a)'], ['a43', '4.3 b)'], ['a44m', '4.4 a)'], ['a44', '4.5 b)']];
 const AVANCE = {
   1: () => { const d = S.d[1]; const n = d.pir.filter(Boolean).length + d.dec.filter(Boolean).length + d.cic.filter(Boolean).length + (palabras(d.j1) >= MINW.j) + (palabras(d.j2) >= MINW.j); return [n, d.pir.length + d.dec.length + d.cic.length + 2]; },
   2: () => { const d = S.d[2]; let n = 0; d.dlg.forEach(g => { n += !!g.e; n += palabras(g.r) >= MINW.r; }); d.niv.forEach(x => { n += !!x.n; n += palabras(x.j) >= MINW.nj; }); return [n, d.dlg.length * 2 + d.niv.length * 2]; },
   3: () => { const d = S.d[3]; let n = raciProblemas().filter(x => !x).length + (palabras(d.ja) >= MINW.ja); const t = d.tj; n += (t.t !== '') + (t.enc !== '') + (!!t.n) + (palabras(t.d) >= MINW.td) + (palabras(t.a) >= MINW.ta) + (!!t.p.trim()) + (palabras(t.c) >= MINW.tc); return [n, d.raci.length + 8]; },
-  4: () => { const d = S.d[4]; let n = d.comp.filter(Boolean).length; ['a41d', 'a41s', 'a42', 'a43', 'a44'].forEach(k => n += !isNaN(MOTOR.leerNumero(d[k]))); n += palabras(d.a42c) >= MINW.a42c; n += !!d.a43alc; n += palabras(d.a43p) >= MINW.a43p; n += palabras(d.a44j) >= MINW.a44j; n += palabras(d.a45) >= MINW.a45; return [n, d.comp.length + 10]; },
+  4: () => { const d = S.d[4]; let n = d.comp.filter(Boolean).length; NUM4.forEach(([k]) => n += !isNaN(MOTOR.leerNumero(d[k]))); n += !!d.a43alc; n += palabras(d.a43p) >= MINW.a43p; n += palabras(d.a44j) >= MINW.a44j; n += palabras(d.a45n) >= MINW.a45n; n += palabras(d.a45) >= MINW.a45; n += esc44() >= 3; return [n, d.comp.length + NUM4.length + 6]; },
 };
 function itemChips(g, idx, n, texto, opts, val) {
   return `<div class="item ${val ? 'done' : ''}" data-g="${g}" data-i="${idx}"><span class="num">${n}</span><p>${esc(TX(texto))}</p>
@@ -1180,76 +1213,115 @@ function limitesSim() {
   return {qmax, pmin: Math.max(pst, Math.round(val.P * .6 / pst) * pst), pmax: Math.round(val.P * 1.5 / pst) * pst, pst, cmin: MOTOR.r2(Math.round(val.C * .5 / cst) * cst), cmax: MOTOR.r2(Math.round(val.C * 1.6 / cst) * cst), cst, fmin: Math.round(val.F * .5 / 5) * 5, fmax: Math.round(val.F * 2 / 5) * 5};
 }
 function textoEsc(s) { const d = C().dss; return `${MOTOR.DIAS[s.dia]}, ${d.clima[s.clima][0].toLowerCase()}, ${d.evento[s.ev][0].toLowerCase()}`; }
+const CFG = {};
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+function evTxt(i) { const n = C().dss.evento[i][0]; return i === 0 ? 'es un día normal' : 'hay «' + n + '»'; }
+function cfgHTML(id, t) {
+  CFG[id] = t;
+  return `<div class="cfg" id="cfg-${id}"><div class="cfg-h"><b>🎛 Configura así el simulador</b><button type="button" class="pill solo-movil" data-sim="1">Abrir el simulador</button></div><ul></ul><div class="cfg-ok">✓ Listo: tu simulador tiene esta configuración</div></div>`;
+}
+function cfgPintar() {
+  const s = S.sim, v = VAL().num, dss = C().dss, eq = (a, b) => Math.abs(a - b) < 0.001;
+  Object.entries(CFG).forEach(([id, t]) => {
+    const el = $('#cfg-' + id); if (!el) return; const L = []; let all = true;
+    const add = (ok, txt, info) => { if (!info) all = all && ok; L.push(`<li class="${info ? 'info' : ok ? 'ok' : ''}"><i>${info ? 'ℹ' : ok ? '✓' : '○'}</i><span>${txt}</span></li>`); };
+    add(s.dia === t.dia, 'Día: <b>' + cap(MOTOR.DIAS[t.dia]) + '</b> <span class="dim">(' + MOTOR.DIAS_C[t.dia] + ')</span>');
+    add(s.clima === t.clima, 'Clima: <b>' + dss.clima[t.clima][0] + '</b>');
+    add(s.ev === t.ev, '¿Algo especial?: <b>' + dss.evento[t.ev][0] + '</b>');
+    if (t.costoInfo) {
+      add(eq(s.precio, v.P) && eq(s.fijo, v.F), 'Precio y costos fijos: <b>los de tu caso</b> <span class="dim">(botón «↺ Valores de mi caso»)</span>');
+      add(true, 'Costo: primero el de tu caso (' + MOTOR.bs(v.C) + '); en c) escribes el nuevo', true);
+    } else add(eq(s.precio, v.P) && eq(s.costo, v.C) && eq(s.fijo, v.F), 'Precio, costo y costos fijos: <b>los de tu caso</b> <span class="dim">(botón «↺ Valores de mi caso»)</span>');
+    if (t.q !== undefined) { const q = typeof t.q === 'function' ? t.q() : t.q; add(!isNaN(q) && s.q === q, 'Tu decisión: <b>' + (isNaN(q) ? t.qtxt : q + ' ' + esc(U())) + '</b>' + (t.qnota ? ' <span class="dim">' + t.qnota + '</span>' : '')); }
+    el.querySelector('ul').innerHTML = L.join(''); el.classList.toggle('ok', all);
+  });
+}
+function esc44() { const q = C().dss.q44, e = S.d[4].esc.filter(x => x.dia === q.dia && x.clima === q.clima && x.ev === q.ev); return new Set(e.map(x => x.q)).size; }
+function abrirSim(on) { document.body.classList.toggle('simOpen', on); $('#scrim').classList.toggle('on', on || $('#drawer').classList.contains('on')); }
 function pintarM4() {
-  const c = C(), d = S.d[4], sec = $('#s-m4'), dss = c.dss, val = VAL(), L = limitesSim(), s = S.sim;
-  const Q = dss.q41, Q2 = dss.q42, Q3 = dss.q43, Q4 = dss.q44;
-  const num = (id, val2, suf) => `<div class="numin"><input class="inp sm" id="${id}" inputmode="decimal" autocomplete="off" value="${esc(val2)}"><span>${suf}</span></div>`;
+  const c = C(), d = S.d[4], sec = $('#s-m4'), dss = c.dss, val = VAL(), L = limitesSim(), D = DU();
+  const Q = dss.q41, Q2 = dss.q42, Q3 = dss.q43, Q4 = dss.q44, cl = i => dss.clima[i][0].toLowerCase();
+  Object.keys(CFG).forEach(k => delete CFG[k]);
+  const num = (id, suf, lab) => `<div class="field"><label for="${id}">${lab}</label><div class="numin"><input class="inp sm" id="${id}" inputmode="decimal" autocomplete="off" value="${esc(d[id] || '')}"><span>${suf}</span></div></div>`;
+  const txt = (id, lab, min, cls = 'sm') => `<div class="field"><label for="${id}">${lab} <small>(mínimo ${min} palabras)</small></label>${areaTexto(id, d[id] || '', min, cls)}</div>`;
+  const paso = (n, tit, html, glow) => `<div class="card paso ${glow ? 'glow' : ''}"><div class="qh"><span class="qn">${n}</span><h3>${tit}</h3></div>${html}</div>`;
+  const ctx = t => `<p class="ctx">📖 ${t}</p>`;
+  const ctl = (id, lab, L1, L2, st) => `<div><div class="lab">${lab}</div><div class="qrow"><input type="range" id="r${id}" min="${L1}" max="${L2}" step="${st}"><input class="inp sm" id="n${id}" inputmode="decimal" autocomplete="off"></div></div>`;
   sec.innerHTML = cabMision(4) + `
-  <div class="card glow"><div class="row" style="justify-content:space-between"><div><div class="kicker">Sistema de soporte a la decisión</div><h3 style="font-size:1.4rem;margin-top:4px">${c.icono} ${esc(c.negocio)} · ${esc(dss.decision)}</h3></div><span class="pill">El sistema calcula · tú decides</span></div>
-    <div class="dssw" style="margin-top:16px">
-      <div class="ctl">
-        <div><div class="lab">Día de la semana</div><div class="seg" id="sDia">${MOTOR.DIAS_C.map((x, i) => `<button type="button" data-v="${i}">${x}</button>`).join('')}</div></div>
-        <div><div class="lab">Clima esperado</div><div class="seg" id="sCli">${dss.clima.map((x, i) => `<button type="button" data-v="${i}">${x[0]}</button>`).join('')}</div></div>
-        <div><div class="lab">¿Hay algo especial?</div><div class="seg" id="sEv">${dss.evento.map((x, i) => `<button type="button" data-v="${i}">${x[0]}</button>`).join('')}</div></div>
-        <div><div class="lab">Precio de venta <b id="vP"></b></div><input type="range" id="rP" min="${L.pmin}" max="${L.pmax}" step="${L.pst}"></div>
-        <div><div class="lab">Costo por ${esc(U(false))} <b id="vC"></b></div><input type="range" id="rC" min="${L.cmin}" max="${L.cmax}" step="${L.cst}"></div>
-        <div><div class="lab">Costos fijos del día <b id="vF"></b></div><input type="range" id="rF" min="${L.fmin}" max="${L.fmax}" step="5"></div>
-        <div><div class="lab">Tu decisión: ${esc(U())} a producir <b id="vQ"></b></div><div class="qrow"><input type="range" id="rQ" min="0" max="${L.qmax}" step="1"><input class="inp sm" id="nQ" inputmode="numeric" style="font-family:var(--fm);font-weight:800"></div></div>
-        <div class="row"><button class="btn ghost" type="button" id="bRes" style="padding:10px 14px;font-size:.88rem">↺ Valores de mi caso</button><button class="btn" type="button" id="bSave" style="padding:10px 14px;font-size:.88rem">＋ Guardar escenario</button></div>
-      </div>
-      <div>
-        <div class="kpis" id="kpis"></div>
-        <div class="tw" style="margin-top:14px"><table class="dtable esc"><thead><tr><th>Escenario</th><th style="text-align:right">Clientes</th><th style="text-align:right">Vendidas</th><th style="text-align:right">Sobran</th><th style="text-align:right">Faltan</th><th style="text-align:right">Ganancia</th></tr></thead><tbody id="tEsc"></tbody></table></div>
-        <div class="chart" id="chart" style="margin-top:12px"></div>
-        <details class="how"><summary>Cómo calcula el sistema</summary><ul id="how"></ul></details>
-      </div>
+  <div class="card guia"><div class="kicker">Cómo usar tu DSS</div>
+    <div class="zonas">
+      <div><b class="zn">①</b><span><b>Supuestos</b>: lo que tú cambias (día, clima, evento, precio, costos y cuántas ${esc(U())} producir).</span></div>
+      <div><b class="zn">②</b><span><b>Resultados</b>: lo que el modelo calcula al instante (demanda, ganancia, sobrantes…).</span></div>
+      <div><b class="zn">③</b><span><b>Escenarios y gráfico</b>: compara pesimista, probable y optimista, y la ganancia según la cantidad.</span></div>
     </div>
-    <div style="margin-top:14px"><div class="lab" style="font-weight:800;margin-bottom:6px">Mis escenarios guardados</div><div class="tw"><table class="dtable saved"><thead><tr><th>#</th><th>Supuestos</th><th style="text-align:right">Precio</th><th style="text-align:right">Costo</th><th style="text-align:right">Produce</th><th style="text-align:right">Ganancia prom.</th></tr></thead><tbody id="tSav"></tbody></table></div></div>
+    <p class="small mut" style="margin:12px 0 0">Avanza paso a paso. Cada paso te cuenta la situación, te dice <b>cómo configurar el simulador</b> (se marca ✓ cuando está bien) y <b>qué resultado buscar</b>.<span class="solo-movil"> En el celular, el simulador se abre con el botón 🎛 de abajo a la izquierda.</span></p>
   </div>
+  <div class="m4w"><div class="m4s">
+  ${paso('4.0', 'Conoce tu DSS: ¿qué parte es cada elemento?', `<p class="hint">Un DSS tiene datos, un modelo que calcula, una interfaz para usarlo y una persona que decide.</p>
+    <div class="items">${S.orden.comp.map((idx, n) => itemChips('comp', idx, n + 1, COMPONENTES[idx].replace('{D}', D), COMP, d.comp[idx])).join('')}</div>`)}
+  ${paso('4.1', '¿Qué pasa si…?', ctx(`Es ${MOTOR.DIAS[Q.dia]}, el pronóstico anuncia ${cl(Q.clima)} y ${evTxt(Q.ev)}. ${esc(D)} quiere saber cuántos clientes esperar y qué pasaría si produce ${val.txt.Q41} ${esc(U())}.`) +
+    cfgHTML('41', {dia: Q.dia, clima: Q.clima, ev: Q.ev, q: val.num.Q41, qnota: '(para la pregunta b)'}) +
+    `<div class="grid2">${num('a41d', esc(U()), 'a) ¿Qué resultado te da el simulador en <b>② «Demanda probable»</b>?')}${num('a41s', esc(U()), 'b) Mira <b>③</b>, fila «Pesimista», columna «Sobran». ¿Qué número te da?')}</div>`)}
+  ${paso('4.2', 'Sensibilidad: ¿y si sube el costo?', ctx(`El proveedor avisa que el costo por ${esc(U(false))} subirá ${val.txt.PCT}. ${esc(D)} quiere saber cuánto dinero perdería un ${MOTOR.DIAS[Q2.dia]} ${cl(Q2.clima)} en que ${evTxt(0)}, si produce ${val.txt.Q42} ${esc(U())}.`) +
+    cfgHTML('42', {dia: Q2.dia, clima: Q2.clima, ev: 0, q: val.num.Q42, costoInfo: true}) +
+    `<div class="grid2">${num('a42g0', 'Bs', 'a) Con el costo actual, ¿qué resultado te da <b>② «Ganancia escenario probable»</b>?')}${num('a42cn', 'Bs', `b) Calcula el costo nuevo: ${val.txt.C} + ${val.txt.PCT} =`)}
+     ${num('a42g1', 'Bs', 'c) Escribe ese costo nuevo en la casilla de <b>① «Costo»</b>. ¿Qué te da ahora <b>② «Ganancia escenario probable»</b>?')}${num('a42', 'Bs', 'd) ¿Cuántos bolivianos cae la ganancia? (a − c)')}</div>`)}
+  ${paso('4.3', 'Búsqueda de objetivos: ¿cuánto hay que vender?', ctx(`${esc(D)} quiere ganar ${val.txt.META} en un día. El simulador no tiene un botón para esto: lo calculas tú y después lo compruebas en el simulador.`) +
+    `<div class="grid2">${num('a43m', 'Bs', `a) ¿Cuánto deja cada ${esc(U(false))} vendida? (precio − costo)`)}${num('a43', esc(U()), 'b) ¿Cuántas necesita vender? (costos fijos + meta) ÷ lo que deja cada una. Redondea hacia arriba.')}</div>
+    <p class="field" style="margin-bottom:4px;font-weight:800">c) Compruébalo en el simulador:</p>` +
+    cfgHTML('43', {dia: Q3.dia, clima: Q3.clima, ev: 0, q: () => MOTOR.leerNumero(S.d[4].a43), qtxt: 'las unidades que calculaste en b)'}) +
+    `<div class="field"><label>¿La <b>② «Demanda probable»</b> alcanza para vender esas unidades? ¿La <b>② «Ganancia escenario probable»</b> llega a la meta?</label><div class="chips" id="a43alc">${['Sí', 'No'].map(x => `<button type="button" class="chip ${d.a43alc === x ? 'on' : ''}" data-v="${x}">${x}</button>`).join('')}</div></div>` +
+    txt('a43p', 'd) ¿Por qué? Usa los números que te da el simulador.', MINW.a43p, 'xs'))}
+  ${paso('4.4', 'Lo que dice el DSS', ctx(`Mañana es ${MOTOR.DIAS[Q4.dia]}: el pronóstico dice «${cl(Q4.clima)}» y ${evTxt(Q4.ev)}. ¿Cuántas ${esc(U())} conviene producir según el modelo?`) +
+    cfgHTML('44', {dia: Q4.dia, clima: Q4.clima, ev: Q4.ev}) +
+    `<ol class="instr"><li>Prueba <b>al menos 3 cantidades distintas</b> en <b>① «Tu decisión»</b> y guarda cada una con <b>«＋ Guardar escenario»</b>.</li><li>Mira el gráfico <b>③</b>: el punto más alto de la curva es la cantidad con mayor ganancia promedio.</li></ol>
+    <div class="esc-cnt" id="esc44"></div>` +
+    `<div class="grid2">${num('a44m', esc(U()), 'a) Según el simulador, ¿con qué cantidad la <b>② «Ganancia promedio (3 escenarios)»</b> es la más alta?')}<div></div></div>` +
+    txt('a44j', 'b) Compara tus escenarios guardados: ¿qué pasa con los sobrantes, los clientes sin atender y la ganancia si produces menos o más que esa cantidad?', MINW.a44j), true)}
+  ${paso('4.5', 'El DSS te ayuda, pero… ¿qué hacemos?', ctx(`El simulador te dio un número, pero un DSS apoya: no decide. Vuelve a leer tu caso (📁 <b>Caso</b> → «El proyecto» y «Las personas»): hay algo que el modelo no registra.`) +
+    txt('a45n', `a) ¿Qué sabes tú de tu caso que el simulador no ve?`, MINW.a45n, 'xs') +
+    num('a44', esc(U()), `b) Tu recomendación final: ¿cuántas ${esc(U())} producir el ${MOTOR.DIAS[Q4.dia]}?`) +
+    txt('a45', `c) ¿Qué le sugieres a ${esc(D)} y por qué? Usa cifras del simulador y de tu caso.`, MINW.a45, ''), true)}
+  </div>
+  <aside class="card glow sim" id="simPanel" aria-label="Simulador DSS">
+    <div class="sim-h"><div><div class="kicker">Simulador DSS</div><h3 style="font-size:1.15rem;margin-top:4px">${c.icono} ${esc(c.negocio)}</h3><div class="small mut">${esc(dss.decision)}</div></div><button class="hbtn solo-movil" id="simClose" type="button">Cerrar ✕</button></div>
+    <div class="zt"><b class="zn">①</b>Supuestos <span class="dim small">· tú los cambias</span></div>
+    <div class="ctl">
+      <div><div class="lab">Día de la semana</div><div class="seg" id="sDia">${MOTOR.DIAS_C.map((x, i) => `<button type="button" data-v="${i}">${x}</button>`).join('')}</div></div>
+      <div><div class="lab">Clima esperado</div><div class="seg" id="sCli">${dss.clima.map((x, i) => `<button type="button" data-v="${i}">${x[0]}</button>`).join('')}</div></div>
+      <div><div class="lab">¿Hay algo especial?</div><div class="seg" id="sEv">${dss.evento.map((x, i) => `<button type="button" data-v="${i}">${x[0]}</button>`).join('')}</div></div>
+      <div class="ctl2">${ctl('P', 'Precio de venta (Bs)', L.pmin, L.pmax, L.pst)}${ctl('C', 'Costo por ' + esc(U(false)) + ' (Bs)', L.cmin, L.cmax, L.cst)}${ctl('F', 'Costos fijos del día (Bs)', L.fmin, L.fmax, 5)}${ctl('Q', 'Tu decisión: ' + esc(U()) + ' a producir', 0, L.qmax, 1)}</div>
+      <div class="row"><button class="btn ghost" type="button" id="bRes" style="padding:10px 14px;font-size:.88rem">↺ Valores de mi caso</button><button class="btn" type="button" id="bSave" style="padding:10px 14px;font-size:.88rem">＋ Guardar escenario</button></div>
+    </div>
+    <div class="zt"><b class="zn">②</b>Resultados <span class="dim small">· los calcula el modelo</span></div>
+    <div class="kpis" id="kpis"></div>
+    <div class="zt"><b class="zn">③</b>Escenarios y gráfico</div>
+    <div class="tw"><table class="dtable esc"><thead><tr><th>Escenario</th><th style="text-align:right">Clientes</th><th style="text-align:right">Vendidas</th><th style="text-align:right">Sobran</th><th style="text-align:right">Faltan</th><th style="text-align:right">Ganancia</th></tr></thead><tbody id="tEsc"></tbody></table></div>
+    <div class="chart" id="chart" style="margin-top:12px"></div>
+    <details class="how"><summary>Cómo calcula el sistema</summary><ul id="how"></ul></details>
+    <div class="zt">Mis escenarios guardados</div>
+    <div class="tw"><table class="dtable saved"><thead><tr><th>#</th><th>Supuestos</th><th style="text-align:right">Precio</th><th style="text-align:right">Costo</th><th style="text-align:right">Produce</th><th style="text-align:right">Ganancia prom.</th></tr></thead><tbody id="tSav"></tbody></table></div>
+  </aside></div>` + pieMision(4) + `<button type="button" class="simfab" id="simFab">🎛 Simulador</button>`;
 
-  <div class="card"><div class="qh"><span class="qn">4.0</span><h3>¿Qué componente del DSS es cada elemento?</h3></div>
-    <div class="items">${S.orden.comp.map((idx, n) => itemChips('comp', idx, n + 1, COMPONENTES[idx].replace('{D}', DU()), COMP, d.comp[idx])).join('')}</div></div>
-
-  <div class="card"><div class="qh"><span class="qn">4.1</span><h3>¿Qué pasa si…? Configura el simulador para un ${MOTOR.DIAS[Q.dia]} con ${dss.clima[Q.clima][0].toLowerCase()} y «${dss.evento[Q.ev][0]}», con el precio y los costos de tu caso.</h3></div>
-    <div class="grid2"><div class="field"><label for="a41d">a) ¿Cuál es la demanda probable?</label>${num('a41d', d.a41d, U())}</div>
-    <div class="field"><label for="a41s">b) Si produces ${val.txt.Q41} ${esc(U())}, ¿cuántas sobrarían en el escenario pesimista?</label>${num('a41s', d.a41s, U())}</div></div></div>
-
-  <div class="card"><div class="qh"><span class="qn">4.2</span><h3>Sensibilidad: un ${MOTOR.DIAS[Q2.dia]} ${dss.clima[Q2.clima][0].toLowerCase()} normal produces ${val.txt.Q42} ${esc(U())}. El proveedor avisa que el costo por ${esc(U(false))} subirá ${val.txt.PCT}. ¿Cuántos bolivianos cae la ganancia del escenario probable?</h3></div>
-    <div class="grid2"><div class="field"><label for="a42">La ganancia cae en…</label>${num('a42', d.a42, 'Bs')}</div>
-    <div class="field"><label for="a42c">Muestra tu cálculo <small>(con tus números)</small></label><textarea class="ta xs" id="a42c" data-min="${MINW.a42c}">${esc(d.a42c)}</textarea><div class="wc" data-for="a42c"></div></div></div></div>
-
-  <div class="card"><div class="qh"><span class="qn">4.3</span><h3>Búsqueda de objetivos: ${esc(DU())} quiere ganar ${val.txt.META} en un día. ¿Cuántas ${esc(U())} necesita vender, como mínimo, con el precio y los costos de tu caso?</h3></div>
-    <div class="grid2"><div class="field"><label for="a43">Unidades que necesita vender</label>${num('a43', d.a43, U())}</div>
-    <div class="field"><label>¿Es alcanzable un ${MOTOR.DIAS[Q3.dia]} ${dss.clima[Q3.clima][0].toLowerCase()} normal?</label><div class="chips" id="a43alc">${['Sí', 'No'].map(x => `<button type="button" class="chip ${d.a43alc === x ? 'on' : ''}" data-v="${x}">${x}</button>`).join('')}</div></div></div>
-    <div class="field"><label for="a43p">Escribe la fórmula con tus números y explica por qué es o no es alcanzable <small>(mínimo ${MINW.a43p} palabras)</small></label>${areaTexto('a43p', d.a43p, MINW.a43p, 'xs')}</div></div>
-
-  <div class="card glow"><div class="qh"><span class="qn">4.4</span><h3>La decisión es tuya: mañana es ${MOTOR.DIAS[Q4.dia]}, el pronóstico dice «${dss.clima[Q4.clima][0].toLowerCase()}» y es «${dss.evento[Q4.ev][0].toLowerCase()}». ¿Cuántas ${esc(U())} producirías?</h3></div>
-    <p class="hint">Usa el simulador, compara los escenarios y considera todo lo que sabes de tu caso.</p>
-    <div class="field" style="margin-top:0"><label for="a44">Mi decisión</label>${num('a44', d.a44, U())}</div>
-    <div class="field"><label for="a44j">Justifica tu decisión con los resultados del simulador: escenarios, sobrantes, clientes sin atender y ganancia <small>(mínimo ${MINW.a44j} palabras)</small></label>${areaTexto('a44j', d.a44j, MINW.a44j)}</div></div>
-
-  <div class="card glow"><div class="qh"><span class="qn">4.5</span><h3>¿Qué sabe tu caso que el modelo no ve? ¿Cómo cambia (o no) tu decisión de 4.4?</h3></div>
-    <p class="hint">Un DSS apoya, no reemplaza: la persona aporta lo que el sistema no registra. Sé concreto y usa cifras.</p>
-    ${areaTexto('a45', d.a45, MINW.a45)}</div>` + pieMision(4);
-
-  // controles del simulador
-  const segs = [['sDia', 'dia'], ['sCli', 'clima'], ['sEv', 'ev']];
-  segs.forEach(([id, k]) => $('#' + id).onclick = e => { const b = e.target.closest('button'); if (!b) return; S.sim[k] = +b.dataset.v; simular(); guardar(); });
-  [['rP', 'precio'], ['rC', 'costo'], ['rF', 'fijo'], ['rQ', 'q']].forEach(([id, k]) => $('#' + id).addEventListener('input', e => { S.sim[k] = +e.target.value; simular(); guardar(); }));
-  $('#nQ').addEventListener('input', e => { const v = parseInt(e.target.value, 10); if (!isNaN(v)) { S.sim.q = Math.max(0, Math.min(L.qmax, v)); simular(true); guardar(); } });
+  [['sDia', 'dia'], ['sCli', 'clima'], ['sEv', 'ev']].forEach(([id, k]) => $('#' + id).onclick = e => { const b = e.target.closest('button'); if (!b) return; S.sim[k] = +b.dataset.v; simular(); guardar(); });
+  [['P', 'precio'], ['C', 'costo'], ['F', 'fijo'], ['Q', 'q']].forEach(([id, k]) => {
+    $('#r' + id).addEventListener('input', e => { S.sim[k] = +e.target.value; simular(); guardar(); });
+    $('#n' + id).addEventListener('input', e => { const v = MOTOR.leerNumero(e.target.value); if (isNaN(v) || v < 0 || v > 100000) return; S.sim[k] = k === 'q' ? Math.round(v) : MOTOR.r2(v); simular('n' + id); guardar(); });
+    $('#n' + id).addEventListener('change', () => simular());
+  });
   $('#bRes').onclick = () => { Object.assign(S.sim, {precio: val.num.P, costo: val.num.C, fijo: val.num.F}); simular(); guardar(); };
-  $('#bSave').onclick = () => { const r = MOTOR.evaluar(C(), val.num, S.sim, S.sim.q); S.d[4].esc.push({dia: S.sim.dia, clima: S.sim.clima, ev: S.sim.ev, precio: S.sim.precio, costo: S.sim.costo, fijo: S.sim.fijo, q: S.sim.q, D: r.D, prom: r.prom}); if (S.d[4].esc.length > 12) S.d[4].esc.shift(); pintarGuardados(); guardar(); toast('Escenario guardado ✓'); };
-  // respuestas
+  $('#bSave').onclick = () => { const r = MOTOR.evaluar(C(), val.num, S.sim, S.sim.q); S.d[4].esc.push({dia: S.sim.dia, clima: S.sim.clima, ev: S.sim.ev, precio: S.sim.precio, costo: S.sim.costo, fijo: S.sim.fijo, q: S.sim.q, D: r.D, prom: r.prom}); if (S.d[4].esc.length > 15) S.d[4].esc.shift(); pintarGuardados(); guardar(); progreso(4); toast('Escenario guardado ✓'); };
+  $('#simFab').onclick = () => abrirSim(true); $('#simClose').onclick = () => abrirSim(false);
+  sec.querySelectorAll('[data-sim]').forEach(b => b.onclick = () => abrirSim(true));
   clicChip(sec, 4);
   $('#a43alc').onclick = e => { const b = e.target.closest('.chip'); if (!b) return; S.d[4].a43alc = b.dataset.v; $$('#a43alc .chip').forEach(x => x.classList.toggle('on', x === b)); guardar(); progreso(4); };
-  ['a41d', 'a41s', 'a42', 'a43', 'a44', 'a42c', 'a43p', 'a44j', 'a45'].forEach(k => $('#' + k).addEventListener('input', e => { S.d[4][k] = e.target.value; if (e.target.tagName === 'TEXTAREA') contar(e.target); guardar(); progreso(4); }));
+  ['a41d', 'a41s', 'a42g0', 'a42cn', 'a42g1', 'a42', 'a43m', 'a43', 'a43p', 'a44m', 'a44j', 'a45n', 'a44', 'a45'].forEach(k => $('#' + k).addEventListener('input', e => { S.d[4][k] = e.target.value; if (e.target.tagName === 'TEXTAREA') contar(e.target); if (k === 'a43') cfgPintar(); guardar(); progreso(4); }));
   simular(); pintarGuardados(); enlazar(sec, 4);
 }
-function simular(desdeNum) {
+function simular(saltar) {
   const c = C(), val = VAL().num, s = S.sim, r = MOTOR.evaluar(c, val, s, s.q), p = r.filas[1];
   [['sDia', 'dia'], ['sCli', 'clima'], ['sEv', 'ev']].forEach(([id, k]) => $$('#' + id + ' button').forEach(b => b.classList.toggle('on', +b.dataset.v === s[k])));
-  $('#rP').value = s.precio; $('#rC').value = s.costo; $('#rF').value = s.fijo; $('#rQ').value = s.q; if (!desdeNum) $('#nQ').value = s.q;
-  $('#vP').textContent = MOTOR.bs(s.precio); $('#vC').textContent = MOTOR.bs(MOTOR.r2(s.costo)); $('#vF').textContent = MOTOR.bs(s.fijo); $('#vQ').textContent = s.q;
+  [['P', 'precio'], ['C', 'costo'], ['F', 'fijo'], ['Q', 'q']].forEach(([id, k]) => { $('#r' + id).value = s[k]; if (saltar !== 'n' + id) $('#n' + id).value = k === 'q' ? s.q : MOTOR.num(s[k], 2); });
   const k = (t, v, cls = '') => `<div class="kpi ${cls}"><small>${t}</small><b>${v}</b></div>`;
   $('#kpis').innerHTML = k('Demanda probable', MOTOR.num(r.D, 0) + ' <span style="font-size:.6em;color:var(--dim)">' + esc(U()) + '</span>', 'hl') +
     k('Ganancia promedio (3 escenarios)', MOTOR.bs(r.prom), r.prom < 0 ? 'neg' : 'hl') + k('Ganancia escenario probable', MOTOR.bs(p.gan), p.gan < 0 ? 'neg' : '') +
@@ -1264,8 +1336,9 @@ function simular(desdeNum) {
     `<code>Ganancia</code> = vendidas × ${MOTOR.bs(s.precio)} − producidas × ${MOTOR.bs(MOTOR.r2(s.costo))} − ${MOTOR.bs(s.fijo)} de costos fijos.`,
     `<code>Punto de equilibrio</code> = costos fijos ÷ (precio − costo)${r.pe === null ? ': no existe, porque el precio no supera el costo' : ' = ' + MOTOR.num(r.pe, 0) + ' ' + esc(U())}.`
   ].map(x => `<li>${x}</li>`).join('');
-  grafico(r);
+  grafico(r); cfgPintar(); contEsc();
 }
+function contEsc() { const el = $('#esc44'); if (!el) return; const n = esc44(); el.textContent = 'Escenarios guardados con la configuración de mañana: ' + n + ' de 3' + (n >= 3 ? ' ✓' : ''); el.classList.toggle('ok', n >= 3); }
 function grafico(r) {
   const c = C(), val = VAL().num, s = S.sim, L = limitesSim(), W = 640, H = 230, l = 56, rr = 14, t = 16, b = 34;
   const xs = [], ys = []; for (let q = 0; q <= L.qmax; q += Math.max(1, Math.round(L.qmax / 120))) { xs.push(q); ys.push(MOTOR.evaluar(c, val, s, q).prom); }
@@ -1285,6 +1358,7 @@ function grafico(r) {
 function pintarGuardados() {
   const e = S.d[4].esc;
   $('#tSav').innerHTML = e.length ? e.map((x, i) => `<tr><td>${i + 1}</td><td>${esc(textoEsc(x))}</td><td class="n">${MOTOR.bs(x.precio)}</td><td class="n">${MOTOR.bs(MOTOR.r2(x.costo))}</td><td class="n">${x.q}</td><td class="n">${MOTOR.bs(x.prom)}</td></tr>`).join('') : '<tr><td colspan="6" class="dim">Aún no guardaste escenarios. Guarda los que pruebes: quedan como evidencia de tu análisis.</td></tr>';
+  contEsc();
 }
 
 /* ═════════════════════════ VALIDAR Y ENVIAR ═════════════════════════ */
@@ -1303,9 +1377,10 @@ function faltantes(m) {
     if (!w(t.d, MINW.td)) f.push('Tarjeta: la descripción necesita al menos ' + MINW.td + ' palabras.'); if (!w(t.a, MINW.ta)) f.push('Tarjeta: describe la autoridad (mínimo ' + MINW.ta + ' palabras).'); if (!t.p.trim()) f.push('Tarjeta: escribe el plazo.'); if (!w(t.c, MINW.tc)) f.push('Tarjeta: escribe cuándo está lista (mínimo ' + MINW.tc + ' palabras).');
   } else {
     if (d.comp.some(x => !x)) f.push('4.0: clasifica todos los componentes.');
-    [['a41d', '4.1 a)'], ['a41s', '4.1 b)'], ['a42', '4.2'], ['a43', '4.3'], ['a44', '4.4']].forEach(([k, n]) => { if (isNaN(MOTOR.leerNumero(d[k]))) f.push(n + ': escribe un número.'); });
-    if (!w(d.a42c, MINW.a42c)) f.push('4.2: muestra tu cálculo.'); if (!d.a43alc) f.push('4.3: indica si es alcanzable.'); if (!w(d.a43p, MINW.a43p)) f.push('4.3: escribe la fórmula y la explicación.');
-    if (!w(d.a44j, MINW.a44j)) f.push('4.4: la justificación necesita al menos ' + MINW.a44j + ' palabras.'); if (!w(d.a45, MINW.a45)) f.push('4.5: escribe al menos ' + MINW.a45 + ' palabras.');
+    NUM4.forEach(([k, n]) => { if (isNaN(MOTOR.leerNumero(d[k]))) f.push(n + ': escribe un número.'); });
+    if (!d.a43alc) f.push('4.3 c): indica si alcanza.'); if (!w(d.a43p, MINW.a43p)) f.push('4.3 d): explica por qué (mínimo ' + MINW.a43p + ' palabras).');
+    if (esc44() < 3) f.push('4.4: guarda al menos 3 escenarios con la configuración de mañana.');
+    if (!w(d.a44j, MINW.a44j)) f.push('4.4 b): escribe al menos ' + MINW.a44j + ' palabras.'); if (!w(d.a45n, MINW.a45n)) f.push('4.5 a): escribe al menos ' + MINW.a45n + ' palabras.'); if (!w(d.a45, MINW.a45)) f.push('4.5 c): escribe al menos ' + MINW.a45 + ' palabras.');
   }
   return f;
 }
@@ -1323,7 +1398,14 @@ function payload(m, porTiempo) {
   const t = S.tele[m]; t.seg = Math.max(0, Math.round((ahora() - (t.t0 || ahora())) / 1000));
   const p = {codigo: S.codigo, mision: m, paralelo: S.paralelo, nombre: S.nombre, disp: DISP, version: VERSION, por_tiempo: !!porTiempo,
     envio: S.codigo + '-M' + m + '-' + Date.now().toString(36), cliente_ts: ahora(), d: S.d[m], tele: Object.assign({}, t, {t0: undefined})};
-  if (m === 4) { p.final = true; p.huella = huellaDe(); }
+  if (m === 4) {
+    const r = S.d[4]; p.final = true; p.huella = huellaDe();
+    p.d = Object.assign({}, r, {raw: {a43p: r.a43p, a44j: r.a44j, a45: r.a45},
+      a42c: `a) ganancia probable con el costo actual: ${r.a42g0} · b) costo nuevo: ${r.a42cn} · c) ganancia con el costo nuevo: ${r.a42g1}`,
+      a43p: `Margen por unidad: ${r.a43m}. ` + r.a43p,
+      a44j: `Mayor ganancia promedio según el simulador: ${r.a44m}. ` + r.a44j,
+      a45: `Lo que el modelo no ve: ${r.a45n} · Recomendación: ${r.a45}`});
+  }
   return p;
 }
 function huellaDe() { return MOTOR.huella(S.codigo + '|' + JSON.stringify([S.d[1], S.d[2], S.d[3], S.d[4]])); }
@@ -1387,11 +1469,12 @@ function documento() {
   B.push({t: 'h', m: 4, x: 'Misión 4 · Tu propio DSS'});
   B.push({t: 'tabla', w: [75, 25], cab: ['Elemento', 'Componente'], filas: S.orden.comp.map(i => [COMPONENTES[i].replace('{D}', DU()), op(COMP, d[4].comp[i])])});
   const q = c.dss, Q = q.q41, Q2 = q.q42, Q3 = q.q43, Q4 = q.q44;
-  B.push({t: 'p', b: `4.1 ${MOTOR.DIAS[Q.dia]}, ${q.clima[Q.clima][0].toLowerCase()}, ${q.evento[Q.ev][0].toLowerCase()}`, x: `a) Demanda probable: ${ok(d[4].a41d)} · b) Sobrantes en el escenario pesimista produciendo ${val.txt.Q41}: ${ok(d[4].a41s)}`});
-  B.push({t: 'p', b: `4.2 Sensibilidad (costo +${val.txt.PCT}, ${val.txt.Q42} ${U()})`, x: `Caída de la ganancia: Bs ${ok(d[4].a42)}. Cálculo: ${ok(d[4].a42c)}`});
-  B.push({t: 'p', b: `4.3 Búsqueda de objetivos (meta ${val.txt.META})`, x: `Unidades necesarias: ${ok(d[4].a43)} · ¿Alcanzable un ${MOTOR.DIAS[Q3.dia]}? ${ok(d[4].a43alc)}. ${ok(d[4].a43p)}`});
-  B.push({t: 'p', b: `4.4 Decisión para el ${MOTOR.DIAS[Q4.dia]} (${q.clima[Q4.clima][0].toLowerCase()}, ${q.evento[Q4.ev][0].toLowerCase()}): ${ok(d[4].a44)} ${U()}`, x: ok(d[4].a44j)});
-  B.push({t: 'p', b: '4.5 Lo que el modelo no ve', x: ok(d[4].a45)});
+  const d4 = d[4];
+  B.push({t: 'p', b: `4.1 ¿Qué pasa si…? ${MOTOR.DIAS[Q.dia]}, ${q.clima[Q.clima][0].toLowerCase()}, ${q.evento[Q.ev][0].toLowerCase()}`, x: `a) Demanda probable: ${ok(d4.a41d)} · b) Sobrantes en el escenario pesimista produciendo ${val.txt.Q41}: ${ok(d4.a41s)}`});
+  B.push({t: 'p', b: `4.2 Sensibilidad (costo +${val.txt.PCT}, ${val.txt.Q42} ${U()})`, x: `a) Ganancia probable con el costo actual: Bs ${ok(d4.a42g0)} · b) Costo nuevo: Bs ${ok(d4.a42cn)} · c) Ganancia con el costo nuevo: Bs ${ok(d4.a42g1)} · d) La ganancia cae: Bs ${ok(d4.a42)}`});
+  B.push({t: 'p', b: `4.3 Búsqueda de objetivos (meta ${val.txt.META})`, x: `a) Margen por unidad: Bs ${ok(d4.a43m)} · b) Unidades necesarias: ${ok(d4.a43)} · c) ¿Alcanza un ${MOTOR.DIAS[Q3.dia]}? ${ok(d4.a43alc)} · d) ${ok(d4.a43p)}`});
+  B.push({t: 'p', b: `4.4 Lo que dice el DSS para el ${MOTOR.DIAS[Q4.dia]} (${q.clima[Q4.clima][0].toLowerCase()}, ${q.evento[Q4.ev][0].toLowerCase()})`, x: `a) Mayor ganancia promedio con: ${ok(d4.a44m)} ${U()} · b) ${ok(d4.a44j)}`});
+  B.push({t: 'p', b: `4.5 El DSS ayuda, pero ¿qué hacemos? Recomendación final: ${ok(d4.a44)} ${U()}`, x: `a) Lo que el modelo no ve: ${ok(d4.a45n)}\nc) ${ok(d4.a45)}`});
   if (d[4].esc.length) B.push({t: 'tabla', w: [6, 40, 12, 12, 12, 18], cab: ['#', 'Escenario guardado', 'Precio', 'Costo', 'Produce', 'Ganancia prom.'], filas: d[4].esc.map((x, i) => [i + 1, textoEsc(x), MOTOR.bs(x.precio), MOTOR.bs(MOTOR.r2(x.costo)), x.q, MOTOR.bs(x.prom)])});
   B.push({t: 'h', m: 0, x: 'Anexo · Tu caso'});
   B.push({t: 'p', b: c.negocio + ' · ' + c.lugar, x: TX(c.perfil)});
