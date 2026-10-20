@@ -860,6 +860,7 @@ async function iniciar(codigo, paralelo, nombre, opciones = {}) {
   const asig = prueba ? {caso: opciones.caso, variante: opciones.variante} : demo ? {caso: -1, variante: 0} : MOTOR.asignar(codigo, CASOS.length);
   let st = lsGet(lsKey(codigo), null);
   if (st && (st.v !== 1 || st.caso !== asig.caso || st.variante !== asig.variante)) st = null;
+  if (st && !API_OK && !st.local && !st.demo) st = null;
   const base = st || nuevoEstado({codigo, paralelo, nombre, caso: asig.caso, variante: asig.variante, demo, local: prueba});
   base.nombre = nombre; base.paralelo = base.paralelo || paralelo;
   const remoto = API_OK && !demo && !prueba;
@@ -874,7 +875,10 @@ async function iniciar(codigo, paralelo, nombre, opciones = {}) {
       const M = {no_encontrado: 'Ese código no existe. Revísalo letra por letra con tu papel.', deshabilitado: 'Ese código está desactivado. Habla con tu docente.', cerrada: (j && j.mensaje) || 'La evaluación no está abierta en este momento.', paralelo_invalido: 'Ese paralelo no está habilitado para esta evaluación.', limite_pruebas: 'Límite de filas de prueba alcanzado.'};
       $('#iErr').textContent = M[j && j.codigo] || 'No se pudo iniciar: ' + ((j && (j.error || j.codigo)) || 'error desconocido'); return;
     }
-    S = base; S.offset = j.ahora - Date.now(); S.inicio = j.inicio; S.limite = j.limite; S.duracion = j.duracion;
+    // lo local solo vale si es de este mismo inicio en la hoja (no de una prueba ni de un código reiniciado)
+    S = (st && !st.local && !st.demo && (!st.inicio || st.inicio === j.inicio)) ? base : nuevoEstado({codigo, paralelo, nombre, caso: asig.caso, variante: asig.variante});
+    S.nombre = nombre; S.offset = j.ahora - Date.now(); S.inicio = j.inicio; S.limite = j.limite; S.duracion = j.duracion;
+    Object.keys(S.enviadas).forEach(m => { if (!(j.misiones || {})[m] && !S.pend[m]) delete S.enviadas[m]; });
     if (j.paralelo && j.paralelo !== paralelo) { S.paralelo = j.paralelo; setTimeout(() => toast('Tu código ya estaba registrado en el paralelo ' + j.paralelo + '; se mantiene ese paralelo.', true, 4500), 900); }
     // misiones que ya están en la hoja: mandan sobre lo local
     Object.entries(j.misiones || {}).forEach(([m, js]) => { try { const o = JSON.parse(js); if (o && o.d) { S.d[m] = o.d; if (o.tele) S.tele[m] = Object.assign(S.tele[m], o.tele); } } catch (e) {} S.enviadas[m] = S.enviadas[m] || Date.now(); });
