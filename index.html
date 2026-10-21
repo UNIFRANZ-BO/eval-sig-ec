@@ -658,6 +658,7 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '
 const QS = new URLSearchParams(location.search);
 const API_URL = (QS.get('api') || URL_SCRIPT || '').trim();
 const API_OK = /^https?:\/\//.test(API_URL) && ENVIAR_AL_SHEET;
+const LIBRE = !API_OK && QS.has('libre');   // revisión docente: navegar todas las fases sin llenar (solo en modo de prueba)
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 function lsGet(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
@@ -839,7 +840,7 @@ function pintarInicio() {
   $('#mcards').innerHTML = MISIONES.slice(1).map(m => `<div class="mc" style="--mcol:${m.col}"><span class="min">${m.min} min</span><div class="ic">${m.ic}</div><span class="n">MISIÓN 0${m.n}</span><b>${m.t}</b><p>${m.d}</p></div>`).join('');
   $('#iPar').innerHTML = PARALELOS.map(p => `<button type="button" data-p="${p}" aria-pressed="false"><small>PARALELO</small><b>${p}</b></button>`).join('');
   $$('#iPar button').forEach(b => b.onclick = () => { parSel = b.dataset.p; $$('#iPar button').forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-pressed', x === b); }); });
-  $('#modoTag').innerHTML = API_OK ? '' : '<span class="modo">MODO DE PRUEBA · no se envía nada a la hoja</span>';
+  $('#modoTag').innerHTML = API_OK ? '' : '<span class="modo">MODO DE PRUEBA · no se envía nada a la hoja</span>' + (LIBRE ? '<br><span class="modo" style="margin-top:8px">REVISIÓN LIBRE · pulsa «Comenzar» sin llenar nada y salta entre fases con la barra de arriba</span>' : '');
   const cod = $('#iCod');
   cod.addEventListener('input', () => {
     let v = cod.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
@@ -865,10 +866,11 @@ function pintarInicio() {
 
 async function intentarInicio(continuar) {
   const err = $('#iErr'); err.textContent = '';
+  if (LIBRE) { if (!$('#iCod').value.trim()) $('#iCod').value = 'AB-2345'; if (!parSel) parSel = PARALELOS[0]; if (!$('#iNom').value.trim()) $('#iNom').value = 'Revisión docente'; $('#iChk').checked = true; continuar = true; }
   const codigo = $('#iCod').value.trim().toUpperCase(), nombre = $('#iNom').value.trim().replace(/\s+/g, ' ');
   if (!RE_COD.test(codigo) && !RE_PRUEBA.test(codigo)) { err.textContent = 'Escribe tu código completo, con el formato XX-0000.'; $('#iCod').focus(); return; }
   if (!parSel) { err.textContent = 'Elige tu paralelo.'; return; }
-  if (nombre.split(' ').length < 2 || nombre.length < 6) { err.textContent = 'Escribe tus apellidos y nombres completos.'; $('#iNom').focus(); return; }
+  if (!LIBRE && (nombre.split(' ').length < 2 || nombre.length < 6)) { err.textContent = 'Escribe tus apellidos y nombres completos.'; $('#iNom').focus(); return; }
   if (!$('#iChk').checked) { err.textContent = 'Marca la casilla de confirmación.'; return; }
   const local = lsGet(lsKey(codigo), null), yaInicio = local && local.inicio;
   if (!continuar && !yaInicio) {
@@ -943,6 +945,10 @@ function ir(m, sinWarp) {
 }
 function pintarPipe() {
   if (!S) return;
+  if (LIBRE) {
+    $('#pipe').innerHTML = [0, 1, 2, 3, 4, 5].map(m => `<button type="button" class="pn ${S.mision === m ? 'cur' : ''}" data-ir="${m}" style="background:none;border:0;cursor:pointer"><i>${m === 0 ? '📁' : m === 5 ? '🏁' : m}</i><span>${m === 0 ? 'Caso' : m === 5 ? 'Final' : MISIONES[m].t}</span></button>${m < 5 ? '<div class="pl"></div>' : ''}`).join('');
+    $$('#pipe [data-ir]').forEach(b => b.onclick = () => ir(+b.dataset.ir)); return;
+  }
   $('#pipe').innerHTML = [1, 2, 3, 4].map(m => `<div class="pn ${S.enviadas[m] ? 'ok' : ''} ${S.mision === m ? 'cur' : ''}"><i>${S.enviadas[m] ? '✓' : m}</i><span>${MISIONES[m].t}</span></div>${m < 4 ? `<div class="pl ${S.enviadas[m] ? 'ok' : ''}"></div>` : ''}`).join('');
 }
 $('#btnCaso').onclick = () => abrirDrawer();
@@ -1358,6 +1364,7 @@ function faltantes(m) {
   return f;
 }
 async function intentarEnviar(m) {
+  if (LIBRE) { ir(m + 1); return; }
   const f = faltantes(m);
   if (f.length) { await modal(`<h3>Te falta completar</h3><ul>${f.slice(0, 10).map(x => `<li>${esc(x)}</li>`).join('')}</ul>${f.length > 10 ? `<p class="small mut">…y ${f.length - 10} más.</p>` : ''}`); return; }
   let aviso = '';
