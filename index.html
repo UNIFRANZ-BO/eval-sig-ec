@@ -1039,7 +1039,7 @@ const AVANCE = {
   1: () => { const d = S.d[1]; const n = d.pir.filter(Boolean).length + d.dec.filter(Boolean).length + d.cic.filter(Boolean).length + (palabras(d.j1) >= MINW.j) + (palabras(d.j2) >= MINW.j); return [n, d.pir.length + d.dec.length + d.cic.length + 2]; },
   2: () => { const d = S.d[2]; let n = 0; d.dlg.forEach(g => { n += !!g.e; n += palabras(g.r) >= MINW.r; }); d.niv.forEach(x => { n += !!x.n; n += palabras(x.j) >= MINW.nj; }); return [n, d.dlg.length * 2 + d.niv.length * 2]; },
   3: () => { const d = S.d[3]; let n = raciProblemas().filter(x => !x).length + (palabras(d.ja) >= MINW.ja); const t = d.tj; n += (t.t !== '') + (t.enc !== '') + (!!t.n) + (palabras(t.d) >= MINW.td) + (palabras(t.a) >= MINW.ta) + (!!t.p.trim()) + (palabras(t.c) >= MINW.tc); return [n, d.raci.length + 8]; },
-  4: () => { const d = S.d[4]; let n = d.comp.filter(Boolean).length; NUM4.forEach(([k]) => n += !isNaN(MOTOR.leerNumero(d[k]))); n += !!d.a43alc; n += esc44() >= 3; return [n, d.comp.length + NUM4.length + 2]; },
+  4: () => { const d = S.d[4]; let n = d.comp.filter(Boolean).length; NUM4.forEach(([k]) => n += !isNaN(MOTOR.leerNumero(d[k]))); n += !!d.a43alc; return [n, d.comp.length + NUM4.length + 1]; },
 };
 function itemChips(g, idx, n, texto, opts, val) {
   return `<div class="item ${val ? 'done' : ''}" data-g="${g}" data-i="${idx}"><span class="num">${n}</span><p>${esc(TX(texto))}</p>
@@ -1254,8 +1254,8 @@ function pintarM4() {
     `<div class="field"><label>¿La <b>② «Demanda probable»</b> alcanza para vender esas unidades? ¿La <b>② «Ganancia escenario probable»</b> llega a la meta?</label><div class="chips" id="a43alc">${['Sí', 'No'].map(x => `<button type="button" class="chip ${d.a43alc === x ? 'on' : ''}" data-v="${x}">${x}</button>`).join('')}</div></div>`)}
   ${paso('4.4', 'Lo que dice el DSS', ctx(`Mañana es ${MOTOR.DIAS[Q4.dia]}: el pronóstico dice «${cl(Q4.clima)}» y ${evTxt(Q4.ev)}. ¿Cuántas ${esc(U())} conviene producir según el modelo?`) +
     cfgHTML('44', {dia: Q4.dia, clima: Q4.clima, ev: Q4.ev}) +
-    `<ol class="instr"><li>Prueba <b>al menos 3 cantidades distintas</b> en <b>① «Tu decisión»</b> y guarda cada una con <b>«＋ Guardar escenario»</b>.</li><li>Mira el gráfico <b>③</b>: el punto más alto de la curva es la cantidad con mayor ganancia promedio.</li></ol>
-    <div class="esc-cnt" id="esc44"></div>` +
+    `<ol class="instr"><li>Prueba varias cantidades en <b>① «Tu decisión»</b>. Si quieres compararlas después, guárdalas con <b>«＋ Guardar escenario»</b>.</li><li>Mira el gráfico <b>③</b>: el punto más alto de la curva es la cantidad con mayor ganancia promedio.</li></ol>
+` +
     `<div class="grid2">${num('a44m', esc(U()), 'a) Según el simulador, ¿con qué cantidad la <b>② «Ganancia promedio (3 escenarios)»</b> es la más alta?')}${num('a44', esc(U()), `b) Y tú, ¿cuántas ${esc(U())} producirías el ${MOTOR.DIAS[Q4.dia]}?`)}</div>`, true)}
   </div>
   <aside class="card glow sim" id="simPanel" aria-label="Simulador DSS">
@@ -1354,7 +1354,6 @@ function faltantes(m) {
     if (d.comp.some(x => !x)) f.push('4.0: clasifica todos los componentes.');
     NUM4.forEach(([k, n]) => { if (isNaN(MOTOR.leerNumero(d[k]))) f.push(n + ': escribe un número.'); });
     if (!d.a43alc) f.push('4.3 c): indica si alcanza.');
-    if (esc44() < 3) f.push('4.4: guarda al menos 3 escenarios con la configuración de mañana.');
   }
   return f;
 }
