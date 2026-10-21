@@ -71,14 +71,6 @@ button{cursor:pointer}
 .hbtn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:12px;padding:8px 12px;font-weight:700;font-size:.85rem;transition:.2s}
 .hbtn:hover{border-color:var(--acc);box-shadow:0 0 16px color-mix(in srgb,var(--acc) 35%,transparent)}
 .hbtn svg{width:18px;height:18px}
-.timer{display:flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;border-radius:999px;border:1px solid var(--line);background:rgba(0,0,0,.35)}
-.timer svg{width:40px;height:40px;transform:rotate(-90deg)}
-.timer .tr-bg{stroke:rgba(255,255,255,.1)}
-.timer .tr{stroke:var(--tcol,var(--c1));stroke-linecap:round;transition:stroke-dashoffset 1s linear,stroke .5s;filter:drop-shadow(0 0 5px var(--tcol,var(--c1)))}
-.timer b{font:800 1.05rem var(--fm);letter-spacing:.04em;color:var(--tcol,var(--c1));min-width:4.4ch;text-align:center}
-.timer.warn{--tcol:#ffb21e}
-.timer.crit{--tcol:#ff4d6d;animation:crit 1s ease-in-out infinite}
-@keyframes crit{50%{box-shadow:0 0 24px rgba(255,77,109,.6)}}
 .sync{width:10px;height:10px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok)}
 .sync.pend{background:#ffb21e;box-shadow:0 0 10px #ffb21e;animation:blink 1s infinite}
 .sync.off{background:#6c7399;box-shadow:none}
@@ -90,7 +82,6 @@ button{cursor:pointer}
   .pipe{order:3;flex-basis:100%}
   .hud-r{margin-left:auto}
   .hbtn .lbl{display:none}
-  .timer svg{width:32px;height:32px}
 }
 
 /* ═════════ ESTRUCTURA ═════════ */
@@ -384,6 +375,10 @@ details.how code{font-family:var(--fm);color:var(--acc)}
 .sim{position:sticky;top:92px;max-height:calc(100vh - 104px);overflow:auto;overscroll-behavior:contain}
 .sim-h{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
 .ctl2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sim .kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+.sim .kpi{padding:12px}
+.sim .kpi b{font-size:clamp(.95rem,1.3vw,1.2rem);white-space:normal;overflow-wrap:anywhere}
+@media (max-width:560px){.sim .kpis{grid-template-columns:1fr 1fr}.sim .kpi b{font-size:1.1rem}}
 .ctl2 .qrow{grid-template-columns:1fr 84px}
 .simfab,.solo-movil{display:none!important}
 @media (max-width:1099px){
@@ -470,7 +465,6 @@ footer.ft{position:relative;z-index:5;text-align:center;font:600 .72rem var(--fm
   <div class="hud-r">
     <span class="sync off" id="sync" title="Estado del envío"></span>
     <button class="hbtn" id="btnCaso" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="lbl">Caso</span></button>
-    <div class="timer" id="timer" title="Tiempo restante"><svg viewBox="0 0 44 44"><circle class="tr-bg" cx="22" cy="22" r="18" fill="none" stroke-width="4"/><circle class="tr" id="tring" cx="22" cy="22" r="18" fill="none" stroke-width="4" stroke-dasharray="113.1" stroke-dashoffset="0"/></svg><b id="tclock">90:00</b></div>
     <button class="hbtn" id="btnMenu" type="button" aria-label="Menú"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
   </div>
 </header>
@@ -495,7 +489,7 @@ footer.ft{position:relative;z-index:5;text-align:center;font:600 .72rem var(--fm
       <div class="card">
         <div class="kicker" style="margin-bottom:12px">Antes de empezar</div>
         <ul class="rules">
-          <li><span>⏱️</span><div><b>90 minutos</b> desde que pulsas «Comenzar». El reloj no se detiene aunque cierres la página.</div></li>
+          <li><span>⏱️</span><div><b>Avanza a tu ritmo</b> durante la clase. Cada misión sugiere un tiempo; tu docente indicará cuándo terminar.</div></li>
           <li><span>🧩</span><div><b>Tu caso es único.</b> Las cifras cambian según tu código: copiar a otra persona no sirve.</div></li>
           <li><span>✍️</span><div><b>Escribe con tus palabras.</b> Pegar texto está desactivado y queda registrado.</div></li>
           <li><span>🧠</span><div><b>Justifica lo que eliges.</b> Se califica la coherencia de tu razonamiento con tu caso.</div></li>
@@ -879,7 +873,7 @@ async function intentarInicio(continuar) {
   const local = lsGet(lsKey(codigo), null), yaInicio = local && local.inicio;
   if (!continuar && !yaInicio) {
     const ok = await modal(`<h3>¿Listo para empezar?</h3><p>Código <b style="font-family:var(--fm)">${esc(codigo)}</b> · Paralelo <b>${esc(parSel)}</b><br>${esc(nombre)}</p>
-      <p>Al pulsar <b>«Comenzar»</b> empiezan a correr tus <b>90 minutos</b>. El reloj no se detiene aunque cierres la página o cambies de dispositivo.</p>`, [{t: 'Revisar mis datos', v: false, cls: 'ghost'}, {t: 'Comenzar ⏱', v: true}]);
+      <p>Al pulsar <b>«Comenzar»</b> se abre tu caso. Tu avance se guarda solo; si se cierra la página, vuelves a entrar con tu código.</p>`, [{t: 'Revisar mis datos', v: false, cls: 'ghost'}, {t: 'Comenzar ⏱', v: true}]);
     if (!ok) return;
   }
   const btn = $('#btnIni'); btn.disabled = true; btn.textContent = 'Conectando…';
@@ -914,6 +908,7 @@ async function iniciar(codigo, paralelo, nombre, opciones = {}) {
     if (j.paralelo && j.paralelo !== paralelo) { S.paralelo = j.paralelo; setTimeout(() => toast('Tu código ya estaba registrado en el paralelo ' + j.paralelo + '; se mantiene ese paralelo.', true, 4500), 900); }
     // misiones que ya están en la hoja: mandan sobre lo local
     Object.entries(j.misiones || {}).forEach(([m, js]) => { try { const o = JSON.parse(js); if (o && o.d) { if (o.d.raw) Object.assign(o.d, o.d.raw); S.d[m] = o.d; if (o.tele) S.tele[m] = Object.assign(S.tele[m], o.tele); } } catch (e) {} S.enviadas[m] = S.enviadas[m] || Date.now(); });
+    if (j.estado === 'terminado' && /tiempo/i.test(j.estado_txt || '') && Object.keys(j.misiones || {}).length < 4) j.estado = 'en_curso';
     if (j.estado === 'terminado') {
       S.final = S.final || j.fin || Date.now(); S.porTiempo = S.porTiempo || /tiempo/i.test(j.estado_txt || '');
       for (const m of [1, 2, 3, 4]) if (!(j.misiones || {})[m] && !S.enviadas[m]) await enviarMision(m, true);
@@ -958,7 +953,7 @@ function cerrarDrawer() { $('#drawer').classList.remove('on'); if (!document.bod
 $('#btnMenu').onclick = async () => {
   const todo = [1, 2, 3, 4].every(m => S.enviadas[m]) && !S.cola.length;
   const v = await modal(`<h3>Menú</h3><p><b>${esc(S.nombre)}</b><br><span class="mut" style="font-family:var(--fm)">${esc(S.codigo)} · Paralelo ${esc(S.paralelo)} · ${C().negocio}</span></p>
-    <p class="small mut">Si sales, tu avance queda guardado en este dispositivo y el reloj <b>sigue corriendo</b>. Para continuar, vuelve a entrar con tu código.</p>`,
+    <p class="small mut">Si sales, tu avance queda guardado en este dispositivo. Para continuar, vuelve a entrar con tu código.</p>`,
     [{t: 'Seguir aquí', v: 0, cls: 'ghost'}, {t: 'Salir', v: 1, cls: 'ghost'}].concat(todo || S.demo || S.local ? [{t: 'Salir y borrar de este dispositivo', v: 2, cls: 'danger'}] : []));
   if (v === 1) location.href = location.pathname + (QS.get('api') ? '?api=' + encodeURIComponent(QS.get('api')) : '');
   if (v === 2) { lsDel(lsKey(S.codigo)); lsDel('sigec_ultimo'); location.href = location.pathname; }
@@ -966,21 +961,7 @@ $('#btnMenu').onclick = async () => {
 
 /* ═════════════════════════ RELOJ ═════════════════════════ */
 let relojT = 0, avisos = {};
-function arrancarReloj() {
-  clearInterval(relojT); const tot = (S.limite - S.inicio) || DURACION_PRUEBA_MIN * 60000;
-  const tick = () => {
-    if (!S) return;
-    const rest = S.mision === 5 ? 0 : S.limite - ahora(), ring = $('#tring'), box = $('#timer');
-    $('#tclock').textContent = S.mision === 5 ? 'FIN' : fmtMin(rest);
-    ring.style.strokeDashoffset = 113.1 * (1 - Math.max(0, Math.min(1, rest / tot)));
-    box.classList.toggle('warn', rest <= 15 * 60000 && rest > 5 * 60000); box.classList.toggle('crit', rest <= 5 * 60000 && S.mision !== 5);
-    for (const [min, txt] of [[15, 'Quedan 15 minutos.'], [5, 'Quedan 5 minutos: revisa y envía lo que tengas.'], [1, '¡Queda 1 minuto! Al llegar a cero se envía todo automáticamente.']]) {
-      if (rest <= min * 60000 && rest > (min - 1) * 60000 && !avisos[min] && S.mision !== 5) { avisos[min] = 1; toast('⏱ ' + txt, min <= 5, 5000); }
-    }
-    if (rest <= 0 && S.mision !== 5 && !S.porTiempo) tiempoAgotado();
-  };
-  tick(); relojT = setInterval(tick, 1000);
-}
+function arrancarReloj() {}   // sin contador ni límite de tiempo: la duración la maneja el docente (abrir/cerrar)
 async function tiempoAgotado() {
   S.porTiempo = true; guardar(true); cerrarDrawer(); $('#modal').classList.remove('on');
   toast('⏱ Se acabó el tiempo: enviando tus respuestas tal como quedaron…', true, 6000);
@@ -1027,7 +1008,7 @@ function pintarExp() {
   $('#s-exp').innerHTML = `
   <div class="card glow">
     <div class="exp-head"><div class="exp-ic">${c.icono}</div><div style="flex:1;min-width:220px"><div class="kicker">Expediente asignado · ${esc(S.codigo)}${S.demo ? ' · CASO DE EJEMPLO' : ''}</div><h2 style="font-size:clamp(1.6rem,4.6vw,2.6rem);font-weight:900;margin-top:6px" class="grad">${esc(c.negocio)}</h2><div class="mut">${esc(c.lugar)}</div></div><span class="stamp">ACCESO CONCEDIDO</span></div>
-    <p class="mut" style="margin-top:16px">Lee tu caso con atención: lo vas a necesitar en las cuatro misiones. Puedes volver a abrirlo cuando quieras con el botón <b>📁 Caso</b> de arriba. <b>El reloj ya está corriendo.</b></p>
+    <p class="mut" style="margin-top:16px">Lee tu caso con atención: lo vas a necesitar en las cuatro misiones. Puedes volver a abrirlo cuando quieras con el botón <b>📁 Caso</b> de arriba.</p>
   </div>
   <div class="card dos noselect">${htmlCaso(true).replace(/ id="d-/g, ' data-sec="')}</div>
   <div class="mfoot"><span class="mut small">Tiempo sugerido de lectura: 5 minutos.</span><button class="btn big" id="goM1" type="button">Ir a la misión 1 →</button></div>`;
@@ -1053,12 +1034,12 @@ function enlazar(sec, m) {
   progreso(m);
 }
 function progreso(m) { const [h, t] = AVANCE[m](); const p = Math.round(h / t * 100); const b = $('#pb' + m); if (b) { b.style.width = p + '%'; $('#pt' + m).textContent = h + ' de ' + t + ' respuestas listas'; } }
-const NUM4 = [['a41d', '4.1 a)'], ['a41s', '4.1 b)'], ['a42g0', '4.2 a)'], ['a42cn', '4.2 b)'], ['a42g1', '4.2 c)'], ['a42', '4.2 d)'], ['a43m', '4.3 a)'], ['a43', '4.3 b)'], ['a44m', '4.4 a)'], ['a44', '4.5 b)']];
+const NUM4 = [['a41d', '4.1 a)'], ['a41s', '4.1 b)'], ['a42g0', '4.2 a)'], ['a42cn', '4.2 b)'], ['a42g1', '4.2 c)'], ['a42', '4.2 d)'], ['a43m', '4.3 a)'], ['a43', '4.3 b)'], ['a44m', '4.4 a)'], ['a44', '4.4 b)']];
 const AVANCE = {
   1: () => { const d = S.d[1]; const n = d.pir.filter(Boolean).length + d.dec.filter(Boolean).length + d.cic.filter(Boolean).length + (palabras(d.j1) >= MINW.j) + (palabras(d.j2) >= MINW.j); return [n, d.pir.length + d.dec.length + d.cic.length + 2]; },
   2: () => { const d = S.d[2]; let n = 0; d.dlg.forEach(g => { n += !!g.e; n += palabras(g.r) >= MINW.r; }); d.niv.forEach(x => { n += !!x.n; n += palabras(x.j) >= MINW.nj; }); return [n, d.dlg.length * 2 + d.niv.length * 2]; },
   3: () => { const d = S.d[3]; let n = raciProblemas().filter(x => !x).length + (palabras(d.ja) >= MINW.ja); const t = d.tj; n += (t.t !== '') + (t.enc !== '') + (!!t.n) + (palabras(t.d) >= MINW.td) + (palabras(t.a) >= MINW.ta) + (!!t.p.trim()) + (palabras(t.c) >= MINW.tc); return [n, d.raci.length + 8]; },
-  4: () => { const d = S.d[4]; let n = d.comp.filter(Boolean).length; NUM4.forEach(([k]) => n += !isNaN(MOTOR.leerNumero(d[k]))); n += !!d.a43alc; n += palabras(d.a43p) >= MINW.a43p; n += palabras(d.a44j) >= MINW.a44j; n += palabras(d.a45n) >= MINW.a45n; n += palabras(d.a45) >= MINW.a45; n += esc44() >= 3; return [n, d.comp.length + NUM4.length + 6]; },
+  4: () => { const d = S.d[4]; let n = d.comp.filter(Boolean).length; NUM4.forEach(([k]) => n += !isNaN(MOTOR.leerNumero(d[k]))); n += !!d.a43alc; n += esc44() >= 3; return [n, d.comp.length + NUM4.length + 2]; },
 };
 function itemChips(g, idx, n, texto, opts, val) {
   return `<div class="item ${val ? 'done' : ''}" data-g="${g}" data-i="${idx}"><span class="num">${n}</span><p>${esc(TX(texto))}</p>
@@ -1270,18 +1251,12 @@ function pintarM4() {
     `<div class="grid2">${num('a43m', 'Bs', `a) ¿Cuánto deja cada ${esc(U(false))} vendida? (precio − costo)`)}${num('a43', esc(U()), 'b) ¿Cuántas necesita vender? (costos fijos + meta) ÷ lo que deja cada una. Redondea hacia arriba.')}</div>
     <p class="field" style="margin-bottom:4px;font-weight:800">c) Compruébalo en el simulador:</p>` +
     cfgHTML('43', {dia: Q3.dia, clima: Q3.clima, ev: 0, q: () => MOTOR.leerNumero(S.d[4].a43), qtxt: 'las unidades que calculaste en b)'}) +
-    `<div class="field"><label>¿La <b>② «Demanda probable»</b> alcanza para vender esas unidades? ¿La <b>② «Ganancia escenario probable»</b> llega a la meta?</label><div class="chips" id="a43alc">${['Sí', 'No'].map(x => `<button type="button" class="chip ${d.a43alc === x ? 'on' : ''}" data-v="${x}">${x}</button>`).join('')}</div></div>` +
-    txt('a43p', 'd) ¿Por qué? Usa los números que te da el simulador.', MINW.a43p, 'xs'))}
+    `<div class="field"><label>¿La <b>② «Demanda probable»</b> alcanza para vender esas unidades? ¿La <b>② «Ganancia escenario probable»</b> llega a la meta?</label><div class="chips" id="a43alc">${['Sí', 'No'].map(x => `<button type="button" class="chip ${d.a43alc === x ? 'on' : ''}" data-v="${x}">${x}</button>`).join('')}</div></div>`)}
   ${paso('4.4', 'Lo que dice el DSS', ctx(`Mañana es ${MOTOR.DIAS[Q4.dia]}: el pronóstico dice «${cl(Q4.clima)}» y ${evTxt(Q4.ev)}. ¿Cuántas ${esc(U())} conviene producir según el modelo?`) +
     cfgHTML('44', {dia: Q4.dia, clima: Q4.clima, ev: Q4.ev}) +
     `<ol class="instr"><li>Prueba <b>al menos 3 cantidades distintas</b> en <b>① «Tu decisión»</b> y guarda cada una con <b>«＋ Guardar escenario»</b>.</li><li>Mira el gráfico <b>③</b>: el punto más alto de la curva es la cantidad con mayor ganancia promedio.</li></ol>
     <div class="esc-cnt" id="esc44"></div>` +
-    `<div class="grid2">${num('a44m', esc(U()), 'a) Según el simulador, ¿con qué cantidad la <b>② «Ganancia promedio (3 escenarios)»</b> es la más alta?')}<div></div></div>` +
-    txt('a44j', 'b) Compara tus escenarios guardados: ¿qué pasa con los sobrantes, los clientes sin atender y la ganancia si produces menos o más que esa cantidad?', MINW.a44j), true)}
-  ${paso('4.5', 'El DSS te ayuda, pero… ¿qué hacemos?', ctx(`El simulador te dio un número, pero un DSS apoya: no decide. Vuelve a leer tu caso (📁 <b>Caso</b> → «El proyecto» y «Las personas»): hay algo que el modelo no registra.`) +
-    txt('a45n', `a) ¿Qué sabes tú de tu caso que el simulador no ve?`, MINW.a45n, 'xs') +
-    num('a44', esc(U()), `b) Tu recomendación final: ¿cuántas ${esc(U())} producir el ${MOTOR.DIAS[Q4.dia]}?`) +
-    txt('a45', `c) ¿Qué le sugieres a ${esc(D)} y por qué? Usa cifras del simulador y de tu caso.`, MINW.a45, ''), true)}
+    `<div class="grid2">${num('a44m', esc(U()), 'a) Según el simulador, ¿con qué cantidad la <b>② «Ganancia promedio (3 escenarios)»</b> es la más alta?')}${num('a44', esc(U()), `b) Y tú, ¿cuántas ${esc(U())} producirías el ${MOTOR.DIAS[Q4.dia]}?`)}</div>`, true)}
   </div>
   <aside class="card glow sim" id="simPanel" aria-label="Simulador DSS">
     <div class="sim-h"><div><div class="kicker">Simulador DSS</div><h3 style="font-size:1.15rem;margin-top:4px">${c.icono} ${esc(c.negocio)}</h3><div class="small mut">${esc(dss.decision)}</div></div><button class="hbtn solo-movil" id="simClose" type="button">Cerrar ✕</button></div>
@@ -1315,7 +1290,7 @@ function pintarM4() {
   sec.querySelectorAll('[data-sim]').forEach(b => b.onclick = () => abrirSim(true));
   clicChip(sec, 4);
   $('#a43alc').onclick = e => { const b = e.target.closest('.chip'); if (!b) return; S.d[4].a43alc = b.dataset.v; $$('#a43alc .chip').forEach(x => x.classList.toggle('on', x === b)); guardar(); progreso(4); };
-  ['a41d', 'a41s', 'a42g0', 'a42cn', 'a42g1', 'a42', 'a43m', 'a43', 'a43p', 'a44m', 'a44j', 'a45n', 'a44', 'a45'].forEach(k => $('#' + k).addEventListener('input', e => { S.d[4][k] = e.target.value; if (e.target.tagName === 'TEXTAREA') contar(e.target); if (k === 'a43') cfgPintar(); guardar(); progreso(4); }));
+  ['a41d', 'a41s', 'a42g0', 'a42cn', 'a42g1', 'a42', 'a43m', 'a43', 'a44m', 'a44'].forEach(k => $('#' + k).addEventListener('input', e => { S.d[4][k] = e.target.value; if (e.target.tagName === 'TEXTAREA') contar(e.target); if (k === 'a43') cfgPintar(); guardar(); progreso(4); }));
   simular(); pintarGuardados(); enlazar(sec, 4);
 }
 function simular(saltar) {
@@ -1378,9 +1353,8 @@ function faltantes(m) {
   } else {
     if (d.comp.some(x => !x)) f.push('4.0: clasifica todos los componentes.');
     NUM4.forEach(([k, n]) => { if (isNaN(MOTOR.leerNumero(d[k]))) f.push(n + ': escribe un número.'); });
-    if (!d.a43alc) f.push('4.3 c): indica si alcanza.'); if (!w(d.a43p, MINW.a43p)) f.push('4.3 d): explica por qué (mínimo ' + MINW.a43p + ' palabras).');
+    if (!d.a43alc) f.push('4.3 c): indica si alcanza.');
     if (esc44() < 3) f.push('4.4: guarda al menos 3 escenarios con la configuración de mañana.');
-    if (!w(d.a44j, MINW.a44j)) f.push('4.4 b): escribe al menos ' + MINW.a44j + ' palabras.'); if (!w(d.a45n, MINW.a45n)) f.push('4.5 a): escribe al menos ' + MINW.a45n + ' palabras.'); if (!w(d.a45, MINW.a45)) f.push('4.5 c): escribe al menos ' + MINW.a45 + ' palabras.');
   }
   return f;
 }
@@ -1400,11 +1374,11 @@ function payload(m, porTiempo) {
     envio: S.codigo + '-M' + m + '-' + Date.now().toString(36), cliente_ts: ahora(), d: S.d[m], tele: Object.assign({}, t, {t0: undefined})};
   if (m === 4) {
     const r = S.d[4]; p.final = true; p.huella = huellaDe();
-    p.d = Object.assign({}, r, {raw: {a43p: r.a43p, a44j: r.a44j, a45: r.a45},
+    p.d = Object.assign({}, r, {raw: {a43p: '', a44j: '', a45: ''},
       a42c: `a) ganancia probable con el costo actual: ${r.a42g0} · b) costo nuevo: ${r.a42cn} · c) ganancia con el costo nuevo: ${r.a42g1}`,
-      a43p: `Margen por unidad: ${r.a43m}. ` + r.a43p,
-      a44j: `Mayor ganancia promedio según el simulador: ${r.a44m}. ` + r.a44j,
-      a45: `Lo que el modelo no ve: ${r.a45n} · Recomendación: ${r.a45}`});
+      a43p: `Margen por unidad: ${r.a43m}.`,
+      a44j: `Mayor ganancia promedio según el simulador: ${r.a44m}. Escenarios guardados para mañana: ${esc44()}.`,
+      a45: ''});
   }
   return p;
 }
@@ -1472,9 +1446,8 @@ function documento() {
   const d4 = d[4];
   B.push({t: 'p', b: `4.1 ¿Qué pasa si…? ${MOTOR.DIAS[Q.dia]}, ${q.clima[Q.clima][0].toLowerCase()}, ${q.evento[Q.ev][0].toLowerCase()}`, x: `a) Demanda probable: ${ok(d4.a41d)} · b) Sobrantes en el escenario pesimista produciendo ${val.txt.Q41}: ${ok(d4.a41s)}`});
   B.push({t: 'p', b: `4.2 Sensibilidad (costo +${val.txt.PCT}, ${val.txt.Q42} ${U()})`, x: `a) Ganancia probable con el costo actual: Bs ${ok(d4.a42g0)} · b) Costo nuevo: Bs ${ok(d4.a42cn)} · c) Ganancia con el costo nuevo: Bs ${ok(d4.a42g1)} · d) La ganancia cae: Bs ${ok(d4.a42)}`});
-  B.push({t: 'p', b: `4.3 Búsqueda de objetivos (meta ${val.txt.META})`, x: `a) Margen por unidad: Bs ${ok(d4.a43m)} · b) Unidades necesarias: ${ok(d4.a43)} · c) ¿Alcanza un ${MOTOR.DIAS[Q3.dia]}? ${ok(d4.a43alc)} · d) ${ok(d4.a43p)}`});
-  B.push({t: 'p', b: `4.4 Lo que dice el DSS para el ${MOTOR.DIAS[Q4.dia]} (${q.clima[Q4.clima][0].toLowerCase()}, ${q.evento[Q4.ev][0].toLowerCase()})`, x: `a) Mayor ganancia promedio con: ${ok(d4.a44m)} ${U()} · b) ${ok(d4.a44j)}`});
-  B.push({t: 'p', b: `4.5 El DSS ayuda, pero ¿qué hacemos? Recomendación final: ${ok(d4.a44)} ${U()}`, x: `a) Lo que el modelo no ve: ${ok(d4.a45n)}\nc) ${ok(d4.a45)}`});
+  B.push({t: 'p', b: `4.3 Búsqueda de objetivos (meta ${val.txt.META})`, x: `a) Margen por unidad: Bs ${ok(d4.a43m)} · b) Unidades necesarias: ${ok(d4.a43)} · c) ¿Alcanza un ${MOTOR.DIAS[Q3.dia]}? ${ok(d4.a43alc)}`});
+  B.push({t: 'p', b: `4.4 Lo que dice el DSS para el ${MOTOR.DIAS[Q4.dia]} (${q.clima[Q4.clima][0].toLowerCase()}, ${q.evento[Q4.ev][0].toLowerCase()})`, x: `a) Mayor ganancia promedio con: ${ok(d4.a44m)} ${U()} · b) Mi decisión: ${ok(d4.a44)} ${U()}`});
   if (d[4].esc.length) B.push({t: 'tabla', w: [6, 40, 12, 12, 12, 18], cab: ['#', 'Escenario guardado', 'Precio', 'Costo', 'Produce', 'Ganancia prom.'], filas: d[4].esc.map((x, i) => [i + 1, textoEsc(x), MOTOR.bs(x.precio), MOTOR.bs(MOTOR.r2(x.costo)), x.q, MOTOR.bs(x.prom)])});
   B.push({t: 'h', m: 0, x: 'Anexo · Tu caso'});
   B.push({t: 'p', b: c.negocio + ' · ' + c.lugar, x: TX(c.perfil)});
